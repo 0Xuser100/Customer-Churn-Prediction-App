@@ -19,41 +19,8 @@ with open('scaler.pkl', 'rb') as file:
     scaler = pickle.load(file)
 
 
-# Custom CSS for styling
-st.markdown(
-    """
-    <style>
-    body {
-        background-color: #f5f5f5;
-    }
-    .main-title {
-        text-align: center;
-        font-size: 36px;
-        font-weight: bold;
-        color: #0073e6;
-        margin-bottom: 30px;
-    }
-    .stSelectbox, .stSlider, .stNumberInput {
-        background-color: #e6f2ff;
-        padding: 10px;
-        border-radius: 10px;
-    }
-    .churn-result {
-        font-size: 24px;
-        font-weight: bold;
-        text-align: center;
-        color: #0073e6;
-    }
-    .churn-warning {
-        color: red;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
-
-# App Title
-st.markdown('<div class="main-title">Customer Churn Prediction</div>', unsafe_allow_html=True)
+## streamlit app
+st.title('Customer Churn PRediction')
 
 # User input
 geography = st.selectbox('Geography', onehot_encoder_geo.categories_[0])
@@ -90,14 +57,14 @@ input_data = pd.concat([input_data.reset_index(drop=True), geo_encoded_df], axis
 # Scale the input data
 input_data_scaled = scaler.transform(input_data)
 
+
 # Predict churn
 prediction = model.predict(input_data_scaled)
 prediction_proba = prediction[0][0]
 
-# Display the result with custom styling
-st.markdown(f'<div class="churn-result">Churn Probability: {prediction_proba:.2f}</div>', unsafe_allow_html=True)
+st.write(f'Churn Probability: {prediction_proba:.2f}')
 
 if prediction_proba > 0.5:
-    st.markdown('<div class="churn-result churn-warning">The customer is likely to churn.</div>', unsafe_allow_html=True)
+    st.write('The customer is likely to churn.')
 else:
-    st.markdown('<div class="churn-result">The customer is not likely to churn.</div>', unsafe_allow_html=True)
+    st.write('The customer is not likely to churn.')
